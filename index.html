@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#2C6B9E">
+    <title>Мой Мессенджер + KinoMir</title>
+    
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+
+<!-- ЭКРАН РЕГИСТРАЦИИ -->
+<div id="authScreen" class="screen active">
+    <div class="form-container">
+        <div class="avatar-icon" style="align-self: center; width: 80px; height: 80px; font-size: 40px;">📱</div>
+        <h2 style="color: var(--text-color); text-align: center; font-size: 18px;">Мой Мессенджер</h2>
+        <input type="text" id="regName" placeholder="Ваше имя">
+        <input type="password" id="regPassword" placeholder="Пароль">
+        <button class="btn-primary" id="doRegisterBtn">Зарегистрироваться</button>
+        <button class="btn-secondary" id="showLoginBtn">У меня есть аккаунт</button>
+    </div>
+</div>
+
+<!-- ЭКРАН ВХОДА -->
+<div id="loginScreen" class="screen">
+    <div class="form-container">
+        <div class="avatar-icon" style="align-self: center; width: 80px; height: 80px; font-size: 40px;">📱</div>
+        <h2 style="color: var(--text-color); text-align: center; font-size: 18px;">Вход</h2>
+        <input type="text" id="loginName" placeholder="Ваше имя">
+        <input type="password" id="loginPassword" placeholder="Пароль">
+        <button class="btn-primary" id="doLoginBtn">��ойти</button>
+        <button class="btn-secondary" id="backToRegisterBtn">Нет аккаунта?</button>
+    </div>
+</div>
+
+<!-- ОСНОВНОЙ ЭКРАН -->
+<div id="mainScreen" class="screen">
+    <div class="header">
+        <div class="avatar-icon" id="mainAvatar" onclick="showProfileScreen()">👤</div>
+        <h2>Мессенджер + KinoMir</h2>
+        <div style="width: 42px;"></div>
+    </div>
+    
+    <div class="main-tabs">
+        <div class="main-tab active" data-tab="all">ВСЕ</div>
+        <div class="main-tab" data-tab="contacts">Контакты</div>
+        <div class="main-tab" data-tab="calls">Звонки</div>
+        <div class="main-tab" data-tab="movies">🎬 КИНО</div>
+    </div>
+    
+    <div id="allTab" class="list-area" style="display: block;">
+        <div class="search-bar">
+            <input type="text" id="searchUsersInput" placeholder="Поиск пользователей...">
+            <div id="searchResults" class="search-results" style="display: none;"></div>
+        </div>
+        <div class="search-link-area">
+            <input type="text" id="searchLinkInput" placeholder="Введите ссылку на канал/группу...">
+            <button id="searchLinkBtn">🔍 Найти</button>
+        </div>
+        <div id="allList"></div>
+    </div>
+    
+    <div id="contactsTab" class="list-area" style="display: none;">
+        <div id="contactsList"></div>
+    </div>
+    
+    <div id="callsTab" class="list-area" style="display: none;">
+        <div id="callsList"></div>
+    </div>
+    
+    <div id="moviesTab" class="movies-container" style="display: none;">
+        <div class="movies-search">
+            <input type="text" id="movieSearchInput" placeholder="Поиск фильмов и сериалов...">
+            <button id="movieSearchBtn">Найти</button>
+        </div>
+        <div class="movies-tabs">
+            <div class="movies-tab active" data-movie-type="all">Все</div>
+            <div class="movies-tab" data-movie-type="movie">Фильмы</div>
+            <div class="movies-tab" data-movie-type="tv">Сериалы</div>
+        </div>
+        <div id="moviesGrid" class="movies-grid"></div>
+    </div>
+    
+    <button class="fab" id="fabBtn">✏️</button>
+    <div class="fab-menu" id="fabMenu">
+        <button class="fab-menu-item" id="newGroupFab">👥 Группа</button>
+        <button class="fab-menu-item" id="newChannelFab">📢 Канал</button>
+    </div>
+</div>
+
+<!-- ПРОФИЛЬ -->
+<div id="profileScreen" class="screen">
+    <div class="header">
+        <button class="back-btn" onclick="showMainScreen()">←</button>
+        <h2>Профиль</h2>
+        <div style="width:32px"></div>
+    </div>
+    <div style="text-align:center;padding:24px">
+        <div class="avatar-large" id="profileAvatar" onclick="document.getElementById('avatarInput').click()">👤</div>
+        <input type="file" id="avatarInput" accept="image/*" style="display:none">
+        <h3 style="color:var(--text-color);margin-top:16px" id="profileName"></h3>
+        <p style="color:var(--text-secondary);margin-top:8px" id="profileBio"></p>
+    </div>
+    <div class="profile-field" onclick="editField('name')"><label>Имя</label><value id="profileNameValue"></value></div>
+    <div class="profile-field" onclick="editField('bio')"><label>О себе</label><value id="profileBioValue"></value></div>
+    <div class="profile-field" onclick="changePassword()"><label>Сменить пароль</label><value>→</value></div>
+    <div class="profile-field" onclick="showScreen('settingsScreen')"><label>Настройки</label><value>→</value></div>
+    <button id="logoutBtn" class="btn-danger" style="margin:8px 16px;width:calc(100% - 32px)">Выйти</button>
+</div>
+
+<!-- СМЕНА ПАРОЛЯ -->
+<div id="passwordScreen" class="screen">
+    <div class="header">
+        <button class="back-btn" onclick="showProfileScreen()">←</button>
+        <h2>Сменить пароль</h2>
+    </div>
+    <div class="form-container">
+        <input type="password" id="oldPassword" placeholder="Старый пароль">
+        <input type="password" id="newPassword" placeholder="Новый пароль">
+        <input type="password" id="confirmPassword" placeholder="Подтвердите пароль">
+        <button class="btn-primary" id="changePasswordBtn">Сохранить</button>
+    </div>
+</div>
+
+<!-- НАСТРОЙКИ -->
+<div id="settingsScreen" class="screen">
+    <div class="header">
+        <button class="back-btn" onclick="showProfileScreen()">←</button>
+        <h2>Настройки</h2>
+    </div>
+    <div class="settings-item" id="settingsTheme">
+        <span>Тёмная тема</span>
+        <div class="theme-switch" id="themeSwitch"></div>
+    </div>
+    <div class="settings-item" id="settingsLogout" style="background:#FF3B30">
+        <span style="color:white">Выйти</span>
+        <span style="color:white">→</span>
+    </div>
+</div>
+
+<!-- ЧАТ -->
+<div id="chatScreen" class="screen">
+    <div class="header">
+        <button class="back-btn" onclick="showMainScreen()">←</button>
+        <div class="avatar-icon" id="chatAvatar">👤</div>
+        <h2 id="chatTitle" style="flex:1;font-size:16px;cursor:pointer" onclick="viewOtherProfile()">Чат</h2>
+        <button id="chatInfoBtn" style="background:none;border:none;color:var(--accent-color);font-size:18px;cursor:pointer">ℹ️</button>
+        <button id="chatCallBtn" style="background:none;border:none;color:var(--accent-color);font-size:18px;cursor:pointer">📞</button>
+    </div>
+    <div id="chatMessages" class="chat-messages"></div>
+    <div id="photoPreview" class="photo-preview" style="display:none">
+        <img id="previewImg">
+        <input type="text" id="photoCaption" placeholder="Коммент...">
+        <button onclick="cancelPhoto()">✕</button>
+        <button id="sendPhotoBtn" style="background:var(--accent-color);color:white">Отправить</button>
+    </div>
+    <div class="input-area">
+        <button class="attach-btn" onclick="attachFile()">📎</button>
+        <button class="voice-btn" id="voiceBtn">🎤</button>
+        <input type="text" id="messageInput" placeholder="Сообщение...">
+        <button class="send-btn" onclick="sendMessage()">📤</button>
+    </div>
+    <input type="file" id="fileInput" accept="image/*" style="display:none">
+</div>
+
+<!-- ��ВОНОК -->
+<div id="callScreen" class="screen">
+    <div class="header">
+        <button class="back-btn" onclick="endCall()">←</button>
+        <h2>Звонок</h2>
+    </div>
+    <div class="call-container">
+        <div class="call-avatar" id="callAvatar">👤</div>
+        <div class="call-status" id="callStatus">Соединение...</div>
+        <div class="call-buttons">
+            <button class="call-btn call-mute" id="muteBtn" onclick="toggleMute()">🔊</button>
+            <button class="call-btn call-end" onclick="endCall()">📞</button>
+        </div>
+    </div>
+</div>
+
+<!-- ИНФОРМАЦИЯ О ЧАТЕ -->
+<div id="chatInfoScreen" class="screen">
+    <div class="header">
+        <button class="back-btn" onclick="showScreen('chatScreen')">←</button>
+        <h2>Информация</h2>
+    </div>
+    <div id="chatInfoContent" class="list-area"></div>
+    <div style="padding:16px">
+        <button id="leaveChatBtn" class="btn-danger" style="width:100%">Покинуть чат</button>
+    </div>
+</div>
+
+<!-- НОВАЯ ГРУППА -->
+<div id="newGroupScreen" class="screen">
+    <div class="header">
+        <button class="back-btn" onclick="showMainScreen()">←</button>
+        <h2>Новая группа</h2>
+    </div>
+    <div class="form-container">
+        <input type="text" id="groupName" placeholder="Название группы">
+        <input type="text" id="groupLink" placeholder="Ссылка">
+        <div id="contactsForGroup" class="list-area" style="max-height:300px"></div>
+        <button class="btn-primary" id="createGroupBtn">Создать</button>
+    </div>
+</div>
+
+<!-- НОВЫЙ КАНАЛ -->
+<div id="newChannelScreen" class="screen">
+    <div class="header">
+        <button class="back-btn" onclick="showMainScreen()">←</button>
+        <h2>Новый канал</h2>
+    </div>
+    <div class="form-container">
+        <input type="text" id="channelName" placeholder="Название канала">
+        <input type="text" id="channelLink" placeholder="Ссылка">
+        <textarea id="channelDesc" placeholder="Описание" rows="3"></textarea>
+        <button class="btn-primary" id="createChannelBtn">Создать</button>
+    </div>
+</div>
+
+<!-- РЕДАКТИРОВАНИЕ -->
+<div id="editScreen" class="screen">
+    <div class="header">
+        <button class="back-btn" onclick="showProfileScreen()">←</button>
+        <h2 id="editTitle">Редактировать</h2>
+    </div>
+    <div class="form-container">
+        <input type="text" id="editValue" placeholder="Новое значение">
+        <button class="btn-primary" id="saveEditBtn">Сохранить</button>
+    </div>
+</div>
+
+<!-- ПРОФИЛЬ ДРУГОГО ПОЛЬЗОВАТЕЛЯ -->
+<div id="otherProfileScreen" class="screen">
+    <div class="header">
+        <button class="back-btn" onclick="showMainScreen()">←</button>
+        <h2>Профиль</h2>
+    </div>
+    <div class="other-profile-screen">
+        <div class="other-profile-avatar" id="otherProfileAvatar">👤</div>
+        <h3 style="color:var(--text-color);margin-top:16px" id="otherProfileName"></h3>
+        <p style="color:var(--text-secondary);margin-top:8px" id="otherProfileBio"></p>
+        <button id="startChatBtn" class="btn-primary" style="margin-top:24px">💬 Написать</button>
+        <button id="callFromProfileBtn" class="btn-secondary" style="margin-top:12px">📞 Позвонить</button>
+    </div>
+</div>
+
+<!-- ПОИСК ПО ССЫЛКЕ -->
+<div id="searchLinkResultScreen" class="screen">
+    <div class="header">
+        <button class="back-btn" onclick="showMainScreen()">←</button>
+        <h2>Найден чат</h2>
+    </div>
+    <div id="searchLinkResultContent" class="other-profile-screen">
+        <div class="other-profile-avatar" id="foundChatAvatar">👥</div>
+        <h3 id="foundChatName"></h3>
+        <p id="foundChatDescription"></p>
+        <div id="foundChatAction"></div>
+    </div>
+</div>
+
+<!-- МОДАЛЬНОЕ ОКНО ДЛЯ ФОТО -->
+<div id="photoModal" class="modal" onclick="closeModal()">
+    <img id="modalImg">
+    <button onclick="saveImage()">Сохранить</button>
+    <button onclick="closeModal()">Закрыть</button>
+</div>
+
+<!-- УВЕДОМЛЕНИЯ И ИНДИКАТОРЫ -->
+<div id="toast" class="toast"></div>
+<div id="offlineBadge" class="offline-badge">📡 Офлайн-режим</div>
+<div id="recordingAnimation" class="recording-animation">
+    <div class="recording-wave-bars">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="recording-timer-text" id="recordTimerText">0:00</div>
+    <button class="cancel-recording" onclick="cancelRecording()">✕</button>
+</div>
+<div id="parserProgress" class="parser-progress"></div>
+<div id="parserStatus" class="parser-status"></div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<!-- СКРИПТЫ -->
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/messenger.js"></script>
+<script src="js/movies.js"></script>
+
+</body>
+</html>
